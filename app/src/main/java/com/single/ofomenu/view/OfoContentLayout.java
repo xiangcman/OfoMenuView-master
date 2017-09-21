@@ -19,13 +19,16 @@ import java.util.List;
 
 public class OfoContentLayout extends LinearLayout {
     private static final String TAG = OfoContentLayout.class.getSimpleName();
+    //存储每个child的终点坐标
     List<Float> endOffset = new ArrayList<>();
 
     public boolean isAnimationing() {
         return isAnimationing;
     }
 
+    //是否在动画中的标志，为事件分发做准备
     private boolean isAnimationing;
+    //是否添加监听的标志，因为所有的child时间都是一样的，所以监听第一个child就行
     private boolean hasListener;
 
     public OfoContentLayout(Context context) {
@@ -77,6 +80,7 @@ public class OfoContentLayout extends LinearLayout {
                 @Override
                 public void onGlobalLayout() {
                     child.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    //终点坐标按照每个child的起点坐标+递增15dp
                     endOffset.add(child.getTop() + ((int) child.getTag()) *
                             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getContext().getResources().getDisplayMetrics()));
                 }

@@ -17,12 +17,17 @@ import android.widget.RelativeLayout;
 public class OfoMenuLayout extends RelativeLayout {
     private View titleView;
     private View contentView;
+    //动画对象
     private ObjectAnimator titleAnimator, contentAnimator;
+    //title起始和终止坐标，主要为动画做准备
     private int titleStartY, titleEndY;
+    //content起始和终止坐标，主要为动画做准备
     private int contentStartY, contentEndY;
+    //title动画标志，为事件分发做准备
     private boolean titleAnimationing;
+    //content动画标志，为事件分发做准备
     private boolean contentAnimationing;
-
+    //content中列表内容布局，它里面也有自己的动画
     private OfoContentLayout ofoContentLayout;
 
     private boolean isOpen;
@@ -54,6 +59,7 @@ public class OfoMenuLayout extends RelativeLayout {
         contentView = getChildAt(1);
     }
 
+    //定义动画部分
     private void definitAnimation() {
         PropertyValuesHolder titlePropertyValuesHolder = PropertyValuesHolder.ofFloat("translationY", titleStartY, titleEndY);
         titleAnimator = ObjectAnimator.ofPropertyValuesHolder(titleView, titlePropertyValuesHolder);
@@ -107,6 +113,7 @@ public class OfoMenuLayout extends RelativeLayout {
         return titleAnimationing || contentAnimationing || ofoContentLayout.isAnimationing();
     }
 
+    //菜单打开的动画
     public void open() {
         int titleHeight = titleView.getLayoutParams().height;
         titleStartY = -titleHeight;
@@ -117,8 +124,10 @@ public class OfoMenuLayout extends RelativeLayout {
         definitAnimation();
         titleAnimator.start();
         contentAnimator.start();
+        ofoContentLayout.open();
     }
 
+    //菜单关闭的动画
     public void close() {
         int titleHeight = titleView.getLayoutParams().height;
         titleStartY = 0;
