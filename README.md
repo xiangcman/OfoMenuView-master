@@ -6,7 +6,7 @@
 </div>
 
 
-为了更好地理解代码，在上代码之前可以看看自己画的图:
+为了更好地理解代码，顺便给出一张草图:
 
 ![草图.png](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/草图.png)
 
