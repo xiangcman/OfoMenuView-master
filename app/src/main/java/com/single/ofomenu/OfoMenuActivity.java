@@ -31,6 +31,7 @@ public class OfoMenuActivity extends AppCompatActivity {
         ofoMenuLayout = ((OfoMenuLayout) findViewById(R.id.ofo_menu));
         ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
         menu = (FrameLayout) findViewById(R.id.menu_content);
+        menu.setBackground(new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this));
         startBtn = (Button) findViewById(R.id.start_ofo);
         //启动menu
         startBtn.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +40,7 @@ public class OfoMenuActivity extends AppCompatActivity {
                 startBtn.setVisibility(View.GONE);
                 ofoMenuLayout.setVisibility(View.VISIBLE);
                 ofoMenuLayout.open();
-                menu.setBackground(new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this));
+
             }
         });
         //关闭menu
