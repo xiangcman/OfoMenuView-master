@@ -1,8 +1,10 @@
 # 苹果版小黄车(ofo)app主页菜单效果
 
-![小黄车menu效果.gif](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/小黄车menu效果.gif)
+<div>
+  <image hspace="20" src="https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/小黄车menu效果.gif">
+  <image src="https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/仿制小黄车menu效果.gif">
+</div>
 
-![仿制小黄车menu效果.gif](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/仿制小黄车menu效果.gif)
 
 为了更好地理解代码，在上代码之前可以看看自己画的图:
 
