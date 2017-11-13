@@ -60,12 +60,14 @@ public class MenuBrawable extends Drawable {
 
         //启动一个新的图层
         int layer = canvas.saveLayer(getBounds().left, getBounds().top, getBounds().right, getBounds().bottom, null, Canvas.ALL_SAVE_FLAG);
+        //在xfmode之前画的是dst
         canvas.drawCircle(bitmapCneter[0], bitmapCneter[1], bitmapXY / 2, mBitmapPaint);
         //该mode下取两部分的交集部分
         mBitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         //裁剪的方式也可以
 //        canvas.save();
 //        canvas.clipPath(circleBitmapPath);
+        //在sfmode之后画的是src
         canvas.drawBitmap(bitmap, bitmapCneter[0] - bitmapXY / 2, bitmapCneter[1] - bitmapXY / 2, mBitmapPaint);
         mBitmapPaint.setXfermode(null);
         canvas.restoreToCount(layer);
