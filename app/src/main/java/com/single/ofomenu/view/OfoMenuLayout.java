@@ -30,6 +30,10 @@ public class OfoMenuLayout extends RelativeLayout {
     //content中列表内容布局，它里面也有自己的动画
     private OfoContentLayout ofoContentLayout;
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
     private boolean isOpen;
 
     private OfoMenuStatusListener ofoMenuStatusListener;

@@ -79,4 +79,13 @@ public class OfoMenuActivity extends AppCompatActivity {
         //给menu设置content部分
         ofoMenuLayout.setOfoContentLayout(ofoContentLayout);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (ofoMenuLayout.isOpen()) {
+            ofoMenuLayout.close();
+            return;
+        }
+        super.onBackPressed();
+    }
 }
