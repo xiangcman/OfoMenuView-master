@@ -13,6 +13,8 @@
 ### 使用:
 见[OfoMenuActivity](https://github.com/1002326270xc/OfoMenuView-master/blob/master/app/src/main/java/com/single/ofomenu/OfoMenuActivity.java)
 
+**欢迎客官到本店光临:**`184793647`(qq群)
+
 ### 关于我:
 **email:** a1002326270@163.com
 
