@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.single.ofomenu.drawable.MenuBrawable;
 import com.single.ofomenu.view.OfoContentLayout;
@@ -27,6 +28,7 @@ public class OfoMenuActivity extends AppCompatActivity {
     OfoContentLayout ofoContentLayout;
     FrameLayout menu;
     Button startBtn;
+    int count;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +47,21 @@ public class OfoMenuActivity extends AppCompatActivity {
         ofoMenuLayout = ((OfoMenuLayout) findViewById(R.id.ofo_menu));
         ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
         menu = (FrameLayout) findViewById(R.id.menu_content);
-        menu.setBackground(new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this));
+        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu);
+        menu.setBackground(menuBrawable);
+
+        menuBrawable.setOnBitmapClickListener(new MenuBrawable.OnBitmapClickListener() {
+            @Override
+            public void bitmapClick() {
+                count++;
+                if (count % 2 == 0) {
+                    menuBrawable.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.single));
+                } else {
+                    menuBrawable.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.timg));
+                }
+
+            }
+        });
         startBtn = (Button) findViewById(R.id.start_ofo);
         //启动menu
         startBtn.setOnClickListener(new View.OnClickListener() {

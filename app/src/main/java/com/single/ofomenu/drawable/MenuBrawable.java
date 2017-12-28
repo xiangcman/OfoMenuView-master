@@ -13,8 +13,11 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by xiangcheng on 17/9/19.
@@ -42,9 +45,11 @@ public class MenuBrawable extends Drawable {
     private int bitmapOffset;
 
     private Path circleBitmapPath;
+    private View mParent;
 
-    public MenuBrawable(Bitmap bitmap, Context context) {
+    public MenuBrawable(Bitmap bitmap, Context context, View parent) {
         this.bitmap = bitmap;
+        this.mParent = parent;
         arcY = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, HEIGHTEST_Y, context.getResources().getDisplayMetrics());
         bitmapXY = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BITMAP_XY, context.getResources().getDisplayMetrics());
         bitmapOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
@@ -52,6 +57,7 @@ public class MenuBrawable extends Drawable {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
+        mBitmapRegion = new Region();
     }
 
     @Override
@@ -61,7 +67,7 @@ public class MenuBrawable extends Drawable {
         //启动一个新的图层
         int layer = canvas.saveLayer(getBounds().left, getBounds().top, getBounds().right, getBounds().bottom, null, Canvas.ALL_SAVE_FLAG);
         //在xfmode之前画的是dst
-        canvas.drawCircle(bitmapCneter[0], bitmapCneter[1], bitmapXY / 2, mBitmapPaint);
+        canvas.drawPath(circleBitmapPath, mBitmapPaint);
         //该mode下取两部分的交集部分
         mBitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         //裁剪的方式也可以
@@ -71,6 +77,16 @@ public class MenuBrawable extends Drawable {
         canvas.drawBitmap(bitmap, bitmapCneter[0] - bitmapXY / 2, bitmapCneter[1] - bitmapXY / 2, mBitmapPaint);
         mBitmapPaint.setXfermode(null);
         canvas.restoreToCount(layer);
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        float scale = (float) (bitmapXY * 1.0 / size);
+        Matrix matrix = new Matrix();
+        //需要对图片进行缩放
+        matrix.setScale(scale, scale);
+        this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        invalidateSelf();
     }
 
     //bounds对象就是view占据的空间
@@ -99,6 +115,20 @@ public class MenuBrawable extends Drawable {
             pathMeasure.getPosTan(bitmapOffset, bitmapCneter, null);
             circleBitmapPath = new Path();
             circleBitmapPath.addCircle(bitmapCneter[0], bitmapCneter[1], bitmapXY / 2, Path.Direction.CCW);
+            mBitmapRegion.setPath(circleBitmapPath, new Region(bounds));
+            mParent.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (mBitmapRegion.contains((int) event.getX(), (int) event.getY())) {
+                            if (onBitmapClickListener != null) {
+                                onBitmapClickListener.bitmapClick();
+                            }
+                        }
+                    }
+                    return true;
+                }
+            });
         }
 
     }
@@ -116,5 +146,18 @@ public class MenuBrawable extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    private Region mBitmapRegion;
+
+    public void setOnBitmapClickListener(OnBitmapClickListener onBitmapClickListener) {
+        this.onBitmapClickListener = onBitmapClickListener;
+    }
+
+    private OnBitmapClickListener onBitmapClickListener;
+
+    //添加对bitmap点击的回调
+    public interface OnBitmapClickListener {
+        void bitmapClick();
     }
 }
