@@ -18,6 +18,10 @@
 
 ![草图.png](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/添加图片点击事件,切换图片.gif)
 
+- 添加凹进去效果:
+
+![草图.png](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/凹进去的menu效果.gif)
+
 
 **欢迎客官到本店光临:**`184793647`(qq群)
 
