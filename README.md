@@ -13,6 +13,12 @@
 ### 使用:
 见[OfoMenuActivity](https://github.com/1002326270xc/OfoMenuView-master/blob/master/app/src/main/java/com/single/ofomenu/OfoMenuActivity.java)
 
+### 已经添加的功能:
+- 添加图片点击事件、添加切换图片方法
+
+![草图.png](https://github.com/1002326270xc/OfoMenuView-master/blob/master/photos/添加图片点击事件,切换图片.gif)
+
+
 **欢迎客官到本店光临:**`184793647`(qq群)
 
 ### 关于我:
