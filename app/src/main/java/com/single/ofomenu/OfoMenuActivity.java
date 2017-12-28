@@ -11,11 +11,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.single.ofomenu.drawable.MenuBrawable;
 import com.single.ofomenu.view.OfoContentLayout;
 import com.single.ofomenu.view.OfoMenuLayout;
+
+import static android.R.attr.type;
 
 /**
  * Created by xiangcheng on 17/9/19.
@@ -28,7 +29,13 @@ public class OfoMenuActivity extends AppCompatActivity {
     OfoContentLayout ofoContentLayout;
     FrameLayout menu;
     Button startBtn;
+    //    Button startConcaveBtn;
     int count;
+//    protected int type = MenuBrawable.CONVEX;
+
+    protected int getType() {
+        return MenuBrawable.CONVEX;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +54,8 @@ public class OfoMenuActivity extends AppCompatActivity {
         ofoMenuLayout = ((OfoMenuLayout) findViewById(R.id.ofo_menu));
         ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
         menu = (FrameLayout) findViewById(R.id.menu_content);
-        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu);
+        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu, getType());
+//        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu);
         menu.setBackground(menuBrawable);
 
         menuBrawable.setOnBitmapClickListener(new MenuBrawable.OnBitmapClickListener() {
@@ -63,16 +71,30 @@ public class OfoMenuActivity extends AppCompatActivity {
             }
         });
         startBtn = (Button) findViewById(R.id.start_ofo);
+//        startConcaveBtn = (Button) findViewById(R.id.start_concave_ofo);
         //启动menu
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                menuBrawable.setRadian(MenuBrawable.CONVEX);
                 startBtn.setVisibility(View.GONE);
+//                startConcaveBtn.setVisibility(View.GONE);
                 ofoMenuLayout.setVisibility(View.VISIBLE);
                 ofoMenuLayout.open();
 
             }
         });
+//        startConcaveBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                menuBrawable.setRadian(MenuBrawable.CONCAVE);
+//                startConvexBtn.setVisibility(View.GONE);
+//                startConcaveBtn.setVisibility(View.GONE);
+//                ofoMenuLayout.setVisibility(View.VISIBLE);
+//                ofoMenuLayout.open();
+//
+//            }
+//        });
         //关闭menu
         findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +112,7 @@ public class OfoMenuActivity extends AppCompatActivity {
             @Override
             public void onClose() {
                 startBtn.setVisibility(View.VISIBLE);
+//                startConcaveBtn.setVisibility(View.VISIBLE);
             }
         });
         //给menu设置content部分

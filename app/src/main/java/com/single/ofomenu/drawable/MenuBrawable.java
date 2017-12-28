@@ -35,6 +35,8 @@ public class MenuBrawable extends Drawable {
     private static final int HEIGHTEST_Y = 80;
     //图片宽度(80dp)
     private static final int BITMAP_XY = 80;
+    private static final int START_OFFSET = 50;
+    private int startOffset;
     //弧度的峰值，为后面绘制贝塞尔曲线做准备
     private int arcY;
     //图片边长
@@ -46,18 +48,34 @@ public class MenuBrawable extends Drawable {
 
     private Path circleBitmapPath;
     private View mParent;
+    //弧度样子是凹进去的
+    public static final int CONCAVE = 1;
+    //弧度是凸出来的
+    public static final int CONVEX = 2;
 
-    public MenuBrawable(Bitmap bitmap, Context context, View parent) {
+    //当前的弧度是上面两个值
+    private int mRadian = CONVEX;
+
+    private Path convexPath;
+    private Path concavePath;
+
+    public MenuBrawable(Bitmap bitmap, Context context, View parent, int radian) {
         this.bitmap = bitmap;
         this.mParent = parent;
+        this.mRadian = radian;
         arcY = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, HEIGHTEST_Y, context.getResources().getDisplayMetrics());
         bitmapXY = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BITMAP_XY, context.getResources().getDisplayMetrics());
         bitmapOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
+        startOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, START_OFFSET, context.getResources().getDisplayMetrics());
         mPath = new Path();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
         mBitmapRegion = new Region();
+    }
+
+    public MenuBrawable(Bitmap bitmap, Context context, View parent) {
+        this(bitmap, context, parent, CONVEX);
     }
 
     @Override
@@ -89,17 +107,29 @@ public class MenuBrawable extends Drawable {
         invalidateSelf();
     }
 
+    public void setRadian(int radian) {
+        if (this.mRadian == radian) {
+            return;
+        }
+        this.mRadian = radian;
+        mPath.reset();
+        if (mRadian == CONVEX) {
+            mPath = createConvexPath(getBounds());
+        } else {
+            mPath = createConcavePath(getBounds());
+        }
+        invalidateSelf();
+    }
+
     //bounds对象就是view占据的空间
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        mPath.reset();
-        mPath.moveTo(bounds.left, bounds.top + arcY);
-        mPath.quadTo(bounds.centerX(), 0, bounds.right, bounds.top + arcY);
-        mPath.lineTo(bounds.right, bounds.bottom);
-        mPath.lineTo(bounds.left, bounds.bottom);
-        mPath.lineTo(bounds.left, bounds.top + arcY);
-
+        if (mRadian == CONVEX) {
+            mPath = createConvexPath(bounds);
+        } else {
+            mPath = createConcavePath(bounds);
+        }
         if (bitmap != null) {
             mBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
@@ -131,6 +161,44 @@ public class MenuBrawable extends Drawable {
             });
         }
 
+    }
+
+    private Path createConcavePath(Rect bounds) {
+        if (concavePath == null) {
+            float[] measurePoint = new float[2];
+            Path measurePath = new Path();
+            measurePath.moveTo(bounds.left, bounds.top);
+            measurePath.quadTo(bounds.centerX(), bounds.top + arcY, bounds.right, bounds.top);
+            measurePath.lineTo(bounds.left, bounds.top);
+            PathMeasure pathMeasure = new PathMeasure();
+            pathMeasure.setPath(measurePath, false);
+            pathMeasure.getPosTan(bounds.centerX(), measurePoint, null);
+            float startTop = bounds.top + arcY + -measurePoint[1];
+
+            Path path = new Path();
+            path.reset();
+            path.moveTo(bounds.left, startTop);
+            path.quadTo(bounds.centerX(), startTop + arcY, bounds.right, startTop);
+            path.lineTo(bounds.right, bounds.bottom);
+            path.lineTo(bounds.left, bounds.bottom);
+            path.lineTo(bounds.left, startTop);
+            concavePath = path;
+        }
+        return concavePath;
+    }
+
+    private Path createConvexPath(Rect bounds) {
+        if (convexPath == null) {
+            Path path = new Path();
+            path.reset();
+            path.moveTo(bounds.left, bounds.top + arcY);
+            path.quadTo(bounds.centerX(), 0, bounds.right, bounds.top + arcY);
+            path.lineTo(bounds.right, bounds.bottom);
+            path.lineTo(bounds.left, bounds.bottom);
+            path.lineTo(bounds.left, bounds.top + arcY);
+            convexPath = path;
+        }
+        return convexPath;
     }
 
     @Override
