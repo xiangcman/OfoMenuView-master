@@ -54,7 +54,7 @@ public class OfoMenuActivity extends AppCompatActivity {
         ofoMenuLayout = ((OfoMenuLayout) findViewById(R.id.ofo_menu));
         ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
         menu = (FrameLayout) findViewById(R.id.menu_content);
-        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu, getType());
+        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.default_avatar_img), OfoMenuActivity.this, menu, getType());
 //        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu);
         menu.setBackground(menuBrawable);
 

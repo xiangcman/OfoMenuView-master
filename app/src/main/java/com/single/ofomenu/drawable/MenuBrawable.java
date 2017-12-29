@@ -132,6 +132,7 @@ public class MenuBrawable extends Drawable {
         }
         if (bitmap != null) {
             mBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBitmapPaint.setColor(Color.WHITE);
             int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
             float scale = (float) (bitmapXY * 1.0 / size);
             Matrix matrix = new Matrix();
