@@ -25,7 +25,11 @@
 
 **欢迎客官到本店光临(qq群):**
 
-<image src="https://github.com/1002326270xc/LayoutManager-FlowLayout/blob/master/photos/IMG_0221.jpg" width="250" width="250" title="qq群"/>
+<image src="https://github.com/1002326270xc/LayoutManager-FlowLayout/blob/master/photos/IMG_0221.jpg" width="200" width="200" title="qq群"/>
+
+**您的鼓励就是给作者最大的支持，或是请我喝杯咖啡也行，哈哈哈~~~**
+
+<image src="https://github.com/xiangcman/LayoutManager-FlowLayout/blob/master/photos/me.png" width="200" width="200"/>
 
 ### 关于我:
 **email:** a1002326270@163.com
