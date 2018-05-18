@@ -1,4 +1,4 @@
-package com.single.ofomenu.drawable;
+package com.xiangcheng.ofomenuview.drawable;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,6 +37,7 @@ public class MenuBrawable extends Drawable {
     private static final int BITMAP_XY = 80;
     private static final int START_OFFSET = 50;
     private int startOffset;
+
     //弧度的峰值，为后面绘制贝塞尔曲线做准备
     private int arcY;
     //图片边长
@@ -76,6 +77,10 @@ public class MenuBrawable extends Drawable {
 
     public MenuBrawable(Bitmap bitmap, Context context, View parent) {
         this(bitmap, context, parent, CONVEX);
+    }
+
+    public int getArcY() {
+        return arcY;
     }
 
     @Override

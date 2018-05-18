@@ -1,14 +1,25 @@
-package com.single.ofomenu.view;
+package com.xiangcheng.ofomenuview.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
-import android.util.AttributeSet;
+import android.graphics.BitmapFactory;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.xiangcheng.ofomenuview.R;
+import com.xiangcheng.ofomenuview.drawable.MenuBrawable;
+
+import java.util.List;
 
 /**
  * Created by xiangcheng on 17/9/19.
@@ -30,6 +41,10 @@ public class OfoMenuLayout extends RelativeLayout {
     //content中列表内容布局，它里面也有自己的动画
     private OfoContentLayout ofoContentLayout;
 
+    FrameLayout menu;
+
+    MenuBrawable menuBrawable;
+
     public boolean isOpen() {
         return isOpen;
     }
@@ -38,22 +53,67 @@ public class OfoMenuLayout extends RelativeLayout {
 
     private OfoMenuStatusListener ofoMenuStatusListener;
 
+    public void setUserIcon(@DrawableRes int userIcon) {
+        if (menuBrawable != null) {
+            menuBrawable.setBitmap(BitmapFactory.decodeResource(getResources(), userIcon));
+        }
+    }
+
     public interface OfoMenuStatusListener {
         void onOpen();
 
         void onClose();
     }
 
-    public OfoMenuLayout(Context context) {
+    public interface OfoUserIconListener {
+        void onClick();
+    }
+
+    public OfoMenuLayout(Context context, int radian, @ColorRes int ofoBackColor, @DimenRes int dimens,
+                         @DrawableRes int closeIcon, @DrawableRes int userIcon, List<View> itemContentViews) {
         super(context);
+        View.inflate(context, R.layout.menu_view_layout, this);
+        ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
+        menu = (FrameLayout) findViewById(R.id.menu_content);
+        if (ofoBackColor != -1) {
+            findViewById(R.id.top_back).setBackgroundColor(context.getResources().getColor(ofoBackColor));
+        }
+        if (userIcon == -1) {
+            userIcon = R.mipmap.default_avatar_img;
+        }
+        menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), userIcon), context, menu, radian);
+        menu.setBackground(menuBrawable);
+        if (dimens != -1) {
+            float dimension = context.getResources().getDimension(dimens);
+            ViewGroup.LayoutParams layoutParams = ((ViewGroup) findViewById(R.id.top_back)).getLayoutParams();
+            layoutParams.height = (int) dimension;
+            ((ViewGroup) findViewById(R.id.top_back)).setLayoutParams(layoutParams);
+            ViewGroup menuContent = (ViewGroup) findViewById(R.id.menu_content);
+            RelativeLayout.LayoutParams contentLp = (LayoutParams) menuContent.getLayoutParams();
+            contentLp.setMargins(0, (int) (dimension - menuBrawable.getArcY()), 0, 0);
+            menuContent.setLayoutParams(contentLp);
+        }
+        if (closeIcon != -1) {
+            ((ImageView) findViewById(R.id.close)).setImageResource(closeIcon);
+        }
+
+        //给content部分设置item
+        ofoContentLayout.setItemContentViews(itemContentViews);
+
+        //关闭menu
+        findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
+        });
+        setVisibility(INVISIBLE);
     }
 
-    public OfoMenuLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public OfoMenuLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public void setOnItemClickListener(OfoContentLayout.OnItemClickListener onItemClickListener) {
+        if (ofoContentLayout != null) {
+            ofoContentLayout.setOnItemClickListener(onItemClickListener);
+        }
     }
 
     @Override
@@ -119,6 +179,8 @@ public class OfoMenuLayout extends RelativeLayout {
 
     //菜单打开的动画
     public void open() {
+        setVisibility(View.VISIBLE);
+
         int titleHeight = titleView.getLayoutParams().height;
         titleStartY = -titleHeight;
         titleEndY = 0;
@@ -150,8 +212,14 @@ public class OfoMenuLayout extends RelativeLayout {
         this.ofoMenuStatusListener = ofoMenuStatusListener;
     }
 
-    public void setOfoContentLayout(OfoContentLayout ofoContentLayout) {
-        this.ofoContentLayout = ofoContentLayout;
+    public void setOfoUserIconListener(final OfoUserIconListener ofoUserIconListener) {
+        menuBrawable.setOnBitmapClickListener(new MenuBrawable.OnBitmapClickListener() {
+            @Override
+            public void bitmapClick() {
+                if (ofoUserIconListener != null) {
+                    ofoUserIconListener.onClick();
+                }
+            }
+        });
     }
-
 }

@@ -1,41 +1,28 @@
 package com.single.ofomenu;
 
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 
-import com.single.ofomenu.drawable.MenuBrawable;
-import com.single.ofomenu.view.OfoContentLayout;
-import com.single.ofomenu.view.OfoMenuLayout;
-
-import static android.R.attr.type;
+import com.xiangcheng.ofomenuview.OfoMenuManager;
+import com.xiangcheng.ofomenuview.drawable.MenuBrawable;
+import com.xiangcheng.ofomenuview.view.OfoContentLayout;
+import com.xiangcheng.ofomenuview.view.OfoMenuLayout;
 
 /**
  * Created by xiangcheng on 17/9/19.
  */
 
 public class OfoMenuActivity extends AppCompatActivity {
-    //最外层的view，用来管理title和content的动画
-    OfoMenuLayout ofoMenuLayout;
-    //contennt中列表view，主要是控制自己的动画
-    OfoContentLayout ofoContentLayout;
-    FrameLayout menu;
-    Button startBtn;
-    //    Button startConcaveBtn;
-    int count;
-//    protected int type = MenuBrawable.CONVEX;
+    OfoMenuManager ofoMenuManager;
 
-    protected int getType() {
-        return MenuBrawable.CONVEX;
-    }
+    private int count;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,78 +38,58 @@ public class OfoMenuActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-        ofoMenuLayout = ((OfoMenuLayout) findViewById(R.id.ofo_menu));
-        ofoContentLayout = ((OfoContentLayout) findViewById(R.id.ofo_content));
-        menu = (FrameLayout) findViewById(R.id.menu_content);
-        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.default_avatar_img), OfoMenuActivity.this, menu, getType());
-//        final MenuBrawable menuBrawable = new MenuBrawable(BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap), OfoMenuActivity.this, menu);
-        menu.setBackground(menuBrawable);
-
-        menuBrawable.setOnBitmapClickListener(new MenuBrawable.OnBitmapClickListener() {
-            @Override
-            public void bitmapClick() {
-                count++;
-                if (count % 2 == 0) {
-                    menuBrawable.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.single));
-                } else {
-                    menuBrawable.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.timg));
-                }
-
-            }
-        });
-        startBtn = (Button) findViewById(R.id.start_ofo);
-//        startConcaveBtn = (Button) findViewById(R.id.start_concave_ofo);
-        //启动menu
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        ofoMenuManager = new OfoMenuManager.Builder(this)
+                //CONCAVE：凹进去；CONVEX：凸出来
+                .setRadian(MenuBrawable.CONVEX)
+                .setOfoBackColor(android.R.color.holo_blue_light)
+                .setOfoPosition(R.dimen.ofo_menu_height)
+                .addItemContentView(R.layout.item_huiyuan)
+                .addItemContentView(R.layout.item_qianbao)
+                .addItemContentView(R.layout.item_xiaoxi)
+                .addItemContentView(R.layout.item_xingcheng)
+                .addItemContentView(R.layout.item_ziliao)
+                .build();
+        ((ViewGroup) findViewById(android.R.id.content)).addView(ofoMenuManager.getRootView());
+        findViewById(R.id.start_ofo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                menuBrawable.setRadian(MenuBrawable.CONVEX);
-                startBtn.setVisibility(View.GONE);
-//                startConcaveBtn.setVisibility(View.GONE);
-                ofoMenuLayout.setVisibility(View.VISIBLE);
-                ofoMenuLayout.open();
-
+                ofoMenuManager.open();
             }
         });
-//        startConcaveBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                menuBrawable.setRadian(MenuBrawable.CONCAVE);
-//                startConvexBtn.setVisibility(View.GONE);
-//                startConcaveBtn.setVisibility(View.GONE);
-//                ofoMenuLayout.setVisibility(View.VISIBLE);
-//                ofoMenuLayout.open();
-//
-//            }
-//        });
-        //关闭menu
-        findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ofoMenuLayout.close();
-            }
-        });
-        //menu的监听
-        ofoMenuLayout.setOfoMenuStatusListener(new OfoMenuLayout.OfoMenuStatusListener() {
+        ofoMenuManager.setOfoMenuStatusListener(new OfoMenuLayout.OfoMenuStatusListener() {
             @Override
             public void onOpen() {
-
+                findViewById(R.id.start_ofo).setVisibility(View.GONE);
             }
 
             @Override
             public void onClose() {
-                startBtn.setVisibility(View.VISIBLE);
-//                startConcaveBtn.setVisibility(View.VISIBLE);
+                findViewById(R.id.start_ofo).setVisibility(View.VISIBLE);
             }
         });
-        //给menu设置content部分
-        ofoMenuLayout.setOfoContentLayout(ofoContentLayout);
+        ofoMenuManager.setOfoUsesrIconListener(new OfoMenuLayout.OfoUserIconListener() {
+            @Override
+            public void onClick() {
+                count++;
+                if (count % 2 == 0) {
+                    ofoMenuManager.setUserIcon(R.mipmap.single);
+                } else {
+                    ofoMenuManager.setUserIcon(R.mipmap.timg);
+                }
+            }
+        });
+        ofoMenuManager.setOnItemClickListener(new OfoContentLayout.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
-        if (ofoMenuLayout.isOpen()) {
-            ofoMenuLayout.close();
+        if (ofoMenuManager.isOpen()) {
+            ofoMenuManager.close();
             return;
         }
         super.onBackPressed();

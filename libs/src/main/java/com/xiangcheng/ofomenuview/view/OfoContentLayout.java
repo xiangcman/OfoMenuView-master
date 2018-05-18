@@ -1,4 +1,4 @@
-package com.single.ofomenu.view;
+package com.xiangcheng.ofomenuview.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -89,4 +89,29 @@ public class OfoContentLayout extends LinearLayout {
 
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onClick(int position);
+    }
+
+    public void setItemContentViews(List<View> itemContentViews) {
+        for (int i = 0; i < itemContentViews.size(); i++) {
+            final int position = i;
+            View view = itemContentViews.get(i);
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onClick(position);
+                    }
+                }
+            });
+            addView(view);
+        }
+    }
 }
