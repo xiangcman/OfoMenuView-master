@@ -531,10 +531,13 @@ public void open() {
 ### 总结:
 
 ![总结图.png](http://upload-images.jianshu.io/upload_images/2528336-67054348629a4e4b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-(1)初始化好content和title两部分的位置
-(2)自定义好content部分的Drawable(**MenuBrawable**)
-(3)在**OfoMenuLayout**中处理content和title的打开和关闭动画
-(4)在**OfoContentLayout**中处理打开的动画，它是不需要关闭动画的
+- 初始化好content和title两部分的位置
+
+- 自定义好content部分的Drawable(**MenuBrawable**)
+
+- 在**OfoMenuLayout**中处理content和title的打开和关闭动画
+
+- 在**OfoContentLayout**中处理打开的动画，它是不需要关闭动画的
 
 **欢迎客官到本店光临:**`184793647`(qq群)
 
